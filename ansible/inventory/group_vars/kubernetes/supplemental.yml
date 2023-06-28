@@ -1,5 +1,5 @@
 ---
 timezone: "Europe/London"
-kubehaproxy_address: "192.168.4.100"
+kubehaproxy_address: "192.168.5.100"
 cluster_cidr: "172.22.0.0/16"
 service_cidr: "172.24.0.0/16"
