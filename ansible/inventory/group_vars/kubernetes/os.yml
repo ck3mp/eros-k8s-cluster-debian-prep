@@ -1,8 +1,7 @@
 ---
-
 # ssh_authorized_keys: []
 
-ubuntu:
+debian:
   packages:
     - hdparm
     - htop

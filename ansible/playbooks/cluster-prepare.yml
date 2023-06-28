@@ -31,7 +31,7 @@
       block:
         - name: Packages | Install required packages
           ansible.builtin.apt:
-            name: "{{ ubuntu.packages | default([]) }}"
+            name: "{{ debian.packages | default([]) }}"
             state: present
             update_cache: true
         - name: Packages | Remove leaf packages
