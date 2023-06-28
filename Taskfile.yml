@@ -2,7 +2,6 @@
 version: "3"
 
 vars:
-  KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
   ANSIBLE_DIR: "{{.ROOT_DIR}}/ansible"
 
 dotenv: [".config.env"]
@@ -13,6 +12,7 @@ env:
 
 includes:
   ansible: .taskfiles/AnsibleTasks.yml
+  precommit: .taskfiles/PrecommitTasks.yml
 
 tasks:
   init:
