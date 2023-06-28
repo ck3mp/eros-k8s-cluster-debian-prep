@@ -140,6 +140,6 @@
         reboot_timeout: 3600
 
     - name: RestartSSH
-      systemctl:
+      ansible.builtin.service:
         name: sshd
         state: restarted
