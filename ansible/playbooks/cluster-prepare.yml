@@ -16,6 +16,17 @@
           community.general.timezone:
             name: "{{ timezone | default('Etc/UTC') }}"
 
+    - name: Disable SSH password authentication
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication no"
+        state: present
+        validate: sshd -t -f %s
+        backup: yes
+      notify:
+        - RestartSSH
+
     - name: Networking
       block:
         - name: Networking | Set hostname to inventory hostname
@@ -127,3 +138,8 @@
       ansible.builtin.reboot:
         msg: Rebooting nodes
         reboot_timeout: 3600
+
+    - name: RestartSSH
+      systemctl:
+        name: sshd
+        state: restarted
