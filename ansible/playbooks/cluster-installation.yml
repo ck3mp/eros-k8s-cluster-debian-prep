@@ -53,11 +53,19 @@
         regexp: https://127.0.0.1:6443
         replace: "https://{{ k3s_registration_address }}:6443"
 
+    - name: Create a networking namespace
+      kubernetes.core.k8s:
+        kubeconfig: /etc/rancher/k3s/k3s.yaml
+        name: networking
+        api_version: v1
+        kind: Namespace
+        state: present
+
     - name: Post installation of custom manifests
       when:
         - k3s_primary_control_node
         - (k3s_server_manifests_templates | length > 0
-            or k3s_server_manifests_urls | length > 0)
+          or k3s_server_manifests_urls | length > 0)
       block:
         - name: Wait for custom manifests to rollout
           kubernetes.core.k8s_info:
@@ -71,7 +79,7 @@
           loop:
             - name: cilium
               kind: HelmChart
-              namespace: kube-system
+              namespace: networking
             - name: podmonitors.monitoring.coreos.com
               kind: CustomResourceDefinition
             - name: prometheusrules.monitoring.coreos.com
@@ -83,7 +91,7 @@
             kubeconfig: /etc/rancher/k3s/k3s.yaml
             kind: Job
             name: helm-install-cilium
-            namespace: kube-system
+            namespace: networking
             wait: true
             wait_condition:
               type: Complete
@@ -96,7 +104,7 @@
             kubeconfig: /etc/rancher/k3s/k3s.yaml
             name: cilium
             kind: HelmChart
-            namespace: kube-system
+            namespace: networking
             patch:
               - op: add
                 path: /metadata/annotations/helmcharts.helm.cattle.io~1unmanaged
@@ -106,14 +114,14 @@
             kubeconfig: /etc/rancher/k3s/k3s.yaml
             name: cilium
             kind: HelmChart
-            namespace: kube-system
+            namespace: networking
             state: absent
         - name: Check if Cilium HelmChart was deleted
           kubernetes.core.k8s_info:
             kubeconfig: /etc/rancher/k3s/k3s.yaml
             name: cilium
             kind: HelmChart
-            namespace: kube-system
+            namespace: networking
           register: cilium_helmchart
         - name: Force delete the Cilium HelmChart
           when: cilium_helmchart.resources | count > 0
@@ -121,7 +129,7 @@
             kubeconfig: /etc/rancher/k3s/k3s.yaml
             name: cilium
             kind: HelmChart
-            namespace: kube-system
+            namespace: networking
             state: patched
             definition:
               metadata:

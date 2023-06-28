@@ -3,20 +3,20 @@ apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
   name: cilium
-  namespace: kube-system
+  namespace: networking
 spec:
   repo: https://helm.cilium.io/
   chart: cilium
   # renovate: datasource=helm depName=cilium registryUrl=https://helm.cilium.io
   version: "1.13.4"
-  targetNamespace: kube-system
+  targetNamespace: networking
   bootstrap: true
   valuesContent: |-
     bpf:
       masquerade: true
     cluster:
-      name: home-cluster
-      id: 1
+      name: "eros-k8s-cluster"
+      id: "1"
     containerRuntime:
       integration: containerd
       socketPath: /var/run/k3s/containerd/containerd.sock
